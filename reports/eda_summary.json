@@ -1,0 +1,57 @@
+{
+  "ml_25m": {
+    "users": 162242,
+    "items": 13172,
+    "ratings": 24639412,
+    "density_pct": 1.152962882285524,
+    "mean_rating": 3.540292501449585,
+    "median_rating": 4.0,
+    "ratings_per_user_median": 71.0,
+    "ratings_per_user_mean": 151.86827085464924,
+    "ratings_per_user_max": 10569,
+    "ratings_per_item_median": 321.0,
+    "ratings_per_item_max": 81450,
+    "share_ratings_top1pct_items": 0.20292984264397218,
+    "share_ratings_top10pct_items": 0.682042087692677
+  },
+  "netflix": {
+    "users": 49814,
+    "items": 10034,
+    "ratings": 11505691,
+    "density_pct": 2.301903923736423,
+    "mean_rating": 3.609142541885376,
+    "median_rating": 4.0,
+    "ratings_per_user_median": 120.0,
+    "ratings_per_user_mean": 230.9730397077127,
+    "ratings_per_user_max": 6994,
+    "ratings_per_item_median": 255.0,
+    "ratings_per_item_max": 26684,
+    "share_ratings_top1pct_items": 0.1446533719704449,
+    "share_ratings_top10pct_items": 0.634645237734961
+  },
+  "history_buckets_users": {
+    "ml_25m": {
+      "<30": 40223,
+      "30-59": 43074,
+      "60-119": 34572,
+      "120-299": 29511,
+      "300+": 14862
+    },
+    "netflix": {
+      "<30": 6872,
+      "30-59": 11015,
+      "60-119": 10080,
+      "120-299": 12495,
+      "300+": 9352
+    }
+  },
+  "kaggle_netflix_titles": {
+    "titles": 7787,
+    "movies": 5377,
+    "tv_shows": 2410,
+    "missing_director_pct": 30.679337357133683,
+    "missing_country_pct": 6.49800950301785,
+    "release_year_min": 1925,
+    "release_year_max": 2021
+  }
+}

@@ -10,3 +10,4 @@ tqdm
 pytest
 python-dotenv
 pyarrow
+tabulate
