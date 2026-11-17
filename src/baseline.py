@@ -106,11 +106,35 @@ def run(dataset: str, max_users: int | None = None) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
+def run_rank_selected(dataset: str) -> dict:
+    """Test-evaluate the mean-rating baseline at the damping with the best VALIDATION NDCG@10
+    (the RMSE-selected damping, used by `run`, gives the weakest ranking). Logged for the final table."""
+    import json
+    from src.eval import RESULTS_CSV
+    df = pd.read_csv(RESULTS_CSV)
+    v = df[(df.dataset == dataset) & (df.model == "mean_rating") & (df.split == "val")].copy()
+    v["damping"] = v.params.apply(lambda s: json.loads(s)["damping"])
+    m_star = float(v.loc[v["ndcg@10"].idxmax(), "damping"])
+    train, val, test = (data.load_split(dataset, s) for s in ("train", "val", "test"))
+    tr_csr = data.load_train_csr(dataset)
+    n_users, n_items = tr_csr.shape
+    trval = tr_csr + sp.csr_matrix((np.ones(len(val)), (val["u"], val["i"])), shape=tr_csr.shape)
+    b = MeanRatingBaseline(damping=m_star, min_count=MIN_COUNT).fit(train, n_users, n_items)
+    t = evaluate_topk(b.score_fn, test, trval, n_items)
+    log_result(dataset, "mean_rating", "test", {"damping": m_star, "min_count": MIN_COUNT}, t,
+               notes="final-rank damping chosen by val NDCG@10")
+    return {"damping": m_star, **t}
+
+
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--dataset", choices=list(data.CONFIG), required=True)
     ap.add_argument("--max-users", type=int, default=None)
+    ap.add_argument("--rank-final", action="store_true", help="test-evaluate mean-rating at the NDCG-selected damping")
     a = ap.parse_args()
+    if a.rank_final:
+        print(run_rank_selected(a.dataset))
+        raise SystemExit
     pd.set_option("display.width", 250, "display.max_columns", 30)
     out = run(a.dataset, a.max_users)
     cols = ["model", "split", "damping", "rmse", "mae", "precision@10", "recall@10", "hit@10", "ndcg@10", "n_users"]

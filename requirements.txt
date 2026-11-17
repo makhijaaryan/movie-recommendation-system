@@ -11,3 +11,5 @@ pytest
 python-dotenv
 pyarrow
 tabulate
+numba
+kaggle

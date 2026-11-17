@@ -1,0 +1,262 @@
+{
+ "_note": "Which logged test row in experiments/results.csv supplies each table cell. RMSE/MAE come from the 'rating' row (config with best validation RMSE); ranking metrics from the 'ranking' row (config with best validation NDCG@10). See DIFFERENCE.md D14, D23, D26, D28.",
+ "ks": [
+  5,
+  10,
+  20
+ ],
+ "datasets": {
+  "ml_25m": {
+   "Global mean": {
+    "rating": {
+     "model": "global_mean"
+    }
+   },
+   "Mean rating (min 50 ratings)": {
+    "rating": {
+     "model": "mean_rating",
+     "params": {
+      "damping": 0
+     }
+    },
+    "ranking": {
+     "model": "mean_rating",
+     "params": {
+      "damping": 250
+     }
+    }
+   },
+   "Popularity (most rated)": {
+    "ranking": {
+     "model": "popularity_count"
+    }
+   },
+   "Item-based CF": {
+    "rating": {
+     "model": "item_knn",
+     "params": {
+      "k_rating": 300,
+      "k_rank": 50,
+      "shrink": 25.0
+     }
+    },
+    "ranking": {
+     "model": "item_knn",
+     "params": {
+      "k_rating": 300,
+      "k_rank": 50,
+      "shrink": 25.0
+     }
+    }
+   },
+   "User-based CF": {
+    "rating": {
+     "model": "user_knn",
+     "params": {
+      "k_rating": 200,
+      "k_rank": 200,
+      "shrink": 25.0
+     }
+    },
+    "ranking": {
+     "model": "user_knn",
+     "params": {
+      "k_rating": 200,
+      "k_rank": 200,
+      "shrink": 25.0
+     }
+    }
+   },
+   "MF (plain)": {
+    "rating": {
+     "model": "mf_plain",
+     "params": {
+      "k": 128,
+      "lr": 0.005,
+      "lam": 0.02,
+      "epochs": 57
+     }
+    },
+    "ranking": {
+     "model": "mf_plain",
+     "params": {
+      "k": 128,
+      "lr": 0.005,
+      "lam": 0.01,
+      "epochs": 21
+     }
+    }
+   },
+   "MF (biased)": {
+    "rating": {
+     "model": "mf_biased",
+     "params": {
+      "k": 256,
+      "lr": 0.01,
+      "lam": 0.03,
+      "epochs": 46
+     }
+    },
+    "ranking": {
+     "model": "mf_biased",
+     "params": {
+      "k": 128,
+      "lr": 0.01,
+      "lam": 0.01,
+      "epochs": 9
+     }
+    }
+   },
+   "One-class WRMF": {
+    "ranking": {
+     "model": "occf_wrmf",
+     "params": {
+      "k": 64,
+      "alpha": 5.0,
+      "lam": 150.0,
+      "iters": 25
+     }
+    }
+   },
+   "One-class dual-regularized": {
+    "ranking": {
+     "model": "occf_dual",
+     "params": {
+      "k": 64,
+      "alpha": 5.0,
+      "lam": 150.0,
+      "lam_u": 10.0,
+      "lam_i": 10.0,
+      "iters": 30
+     }
+    }
+   }
+  },
+  "netflix": {
+   "Global mean": {
+    "rating": {
+     "model": "global_mean"
+    }
+   },
+   "Mean rating (min 50 ratings)": {
+    "rating": {
+     "model": "mean_rating",
+     "params": {
+      "damping": 5
+     }
+    },
+    "ranking": {
+     "model": "mean_rating",
+     "params": {
+      "damping": 250
+     }
+    }
+   },
+   "Popularity (most rated)": {
+    "ranking": {
+     "model": "popularity_count"
+    }
+   },
+   "Item-based CF": {
+    "rating": {
+     "model": "item_knn",
+     "params": {
+      "k_rating": 200,
+      "k_rank": 5,
+      "shrink": 25.0
+     }
+    },
+    "ranking": {
+     "model": "item_knn",
+     "params": {
+      "k_rating": 200,
+      "k_rank": 5,
+      "shrink": 25.0
+     }
+    }
+   },
+   "User-based CF": {
+    "rating": {
+     "model": "user_knn",
+     "params": {
+      "k_rating": 200,
+      "k_rank": 100,
+      "shrink": 25.0
+     }
+    },
+    "ranking": {
+     "model": "user_knn",
+     "params": {
+      "k_rating": 200,
+      "k_rank": 100,
+      "shrink": 5.0
+     }
+    }
+   },
+   "MF (plain)": {
+    "rating": {
+     "model": "mf_plain",
+     "params": {
+      "k": 128,
+      "lr": 0.005,
+      "lam": 0.03,
+      "epochs": 60
+     }
+    },
+    "ranking": {
+     "model": "mf_plain",
+     "params": {
+      "k": 128,
+      "lr": 0.005,
+      "lam": 0.01,
+      "epochs": 17
+     }
+    }
+   },
+   "MF (biased)": {
+    "rating": {
+     "model": "mf_biased",
+     "params": {
+      "k": 256,
+      "lr": 0.005,
+      "lam": 0.03,
+      "epochs": 40
+     }
+    },
+    "ranking": {
+     "model": "mf_biased",
+     "params": {
+      "k": 128,
+      "lr": 0.005,
+      "lam": 0.01,
+      "epochs": 17
+     }
+    }
+   },
+   "One-class WRMF": {
+    "ranking": {
+     "model": "occf_wrmf",
+     "params": {
+      "k": 64,
+      "alpha": 5.0,
+      "lam": 150.0,
+      "iters": 25
+     }
+    }
+   },
+   "One-class dual-regularized": {
+    "ranking": {
+     "model": "occf_dual",
+     "params": {
+      "k": 64,
+      "alpha": 5.0,
+      "lam": 150.0,
+      "lam_u": 10.0,
+      "lam_i": 10.0,
+      "iters": 25
+     }
+    }
+   }
+  }
+ }
+}
