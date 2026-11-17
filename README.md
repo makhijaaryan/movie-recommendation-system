@@ -186,7 +186,15 @@ Seeds other than 42 keep their data in `data/processed/<dataset>__seed<S>/`; the
 python -m src.buckets                                 # reports/tables/history_buckets.md, reports/figures/history_buckets.png
 ```
 
-**9. Final table**
+**9. Simulated cold start** (each user reveals only N = 1, 3, 5, 10, 20, 50 random training ratings)
+```bash
+python -m src.coldstart --dataset netflix --users 0    # all eligible users, about 35 min
+python -m src.coldstart --dataset ml_25m --users 30000 # fixed 30,000-user subset, about 55 min
+python -m src.coldstart --report                       # reports/tables/cold_start.md, reports/figures/cold_start.png
+```
+MF and one-class CF fold a new user in from their N ratings with the item factors fixed (`src/foldin.py`).
+
+**10. Final table**
 ```bash
 python -m src.final_tables                            # reports/tables/main_results.md, refreshes the table above
 ```

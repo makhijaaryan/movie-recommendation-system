@@ -17,6 +17,7 @@ Run from the project root, e.g.
 from __future__ import annotations
 
 import argparse
+import copy
 import os
 import time
 from concurrent.futures import ThreadPoolExecutor
@@ -130,6 +131,13 @@ class ItemKNN:
         self.sk_abs_t = abs(self.sk).T.tocsr()
         return self
 
+    def with_targets(self, target: sp.csr_matrix):
+        """Shallow copy that scores users from `target` (users x items ratings, e.g. truncated histories)
+        while keeping the item similarities learned from the full training matrix (cold-start simulation)."""
+        c = copy.copy(self)
+        c.mu, c.rc, c.bin = center(target)
+        return c
+
     def _num_den(self, users: np.ndarray):
         num = (self.rc[users] @ self.sk_t).toarray()
         den = (self.bin[users] @ self.sk_abs_t).toarray()
@@ -155,16 +163,28 @@ class UserKNN:
         norm = np.sqrt(np.asarray(self.rc.multiply(self.rc).sum(axis=1)).ravel()).astype(np.float32)
         norm[norm == 0] = 1.0
         self.norm = norm
+        self.t_rc, self.t_bin, self.t_norm = self.rc, self.bin, norm   # target users = the pool by default
         self.sk_cache: tuple | None = None
         return self
+
+    def with_targets(self, target: sp.csr_matrix):
+        """Shallow copy that scores users from `target` (e.g. truncated histories) while the neighbour pool
+        keeps the full training histories (cold-start simulation). A user's own pool row is still excluded."""
+        c = copy.copy(self)
+        c.mu, c.t_rc, c.t_bin = center(target)
+        n = np.sqrt(np.asarray(c.t_rc.multiply(c.t_rc).sum(axis=1)).ravel()).astype(np.float32)
+        n[n == 0] = 1.0
+        c.t_norm = n
+        c.sk_cache = None
+        return c
 
     def _neighbors(self, users: np.ndarray) -> sp.csr_matrix:
         key = (users[0], users[-1], len(users), self.k)
         if self.sk_cache and self.sk_cache[0] == key:
             return self.sk_cache[1]
-        g = (self.rc[users] @ self.rc_t).toarray()
-        n_co = (self.bin[users] @ self.b_t).toarray()
-        sim = (g / self.norm[users][:, None] / self.norm[None, :]) * (n_co / (n_co + self.shrink))
+        g = (self.t_rc[users] @ self.rc_t).toarray()
+        n_co = (self.t_bin[users] @ self.b_t).toarray()
+        sim = (g / self.t_norm[users][:, None] / self.norm[None, :]) * (n_co / (n_co + self.shrink))
         sim[np.arange(len(users)), users] = -np.inf                       # drop self
         ti, tv = _topk_rows(sim, self.k)
         keep = tv > 0
