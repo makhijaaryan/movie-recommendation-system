@@ -194,7 +194,14 @@ python -m src.coldstart --report                       # reports/tables/cold_sta
 ```
 MF and one-class CF fold a new user in from their N ratings with the item factors fixed (`src/foldin.py`).
 
-**10. Final table**
+**10. Why the methods differ** (coverage, popularity and diversity of the top-10 lists)
+```bash
+python -m src.diagnostics --dataset netflix            # about 5 min; 10,000 sampled users
+python -m src.diagnostics --dataset ml_25m             # about 10 min
+python -m src.diagnostics --report                     # reports/tables/list_diagnostics.md, reports/figures/list_diagnostics.png
+```
+
+**11. Final table**
 ```bash
 python -m src.final_tables                            # reports/tables/main_results.md, refreshes the table above
 ```
