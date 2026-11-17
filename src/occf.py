@@ -32,6 +32,7 @@ import scipy.sparse as sp
 from numba import njit, prange
 
 from src import data
+from src.config import SEED
 from src.eval import RELEVANT_THRESHOLD, evaluate_topk, log_result
 
 
@@ -103,7 +104,7 @@ class OCCF:
         self.k, self.alpha, self.lam = k, alpha, lam
         self.lam_u, self.lam_i, self.iters, self.init_std = lam_u, lam_i, iters, init_std
 
-    def fit(self, pos: sp.csr_matrix, user_graph=None, item_graph=None, seed=42, callback=None,
+    def fit(self, pos: sp.csr_matrix, user_graph=None, item_graph=None, seed=SEED, callback=None,
             verbose=True):
         """callback(model, it) -> float score (higher is better) evaluated each iteration; the best
         iteration's factors are kept and self.best_iter is set."""
@@ -167,7 +168,7 @@ def get_graphs(dataset, pos, top_m, need_user, need_item):
         if not needed:
             out[name] = None
             continue
-        f = data.PROC / dataset / f"occf_graph_{name}_m{top_m}.npz"
+        f = data.processed_dir(dataset) / f"occf_graph_{name}_m{top_m}.npz"
         if f.exists():
             z = np.load(f)
             out[name] = (z["idx"], z["w"])

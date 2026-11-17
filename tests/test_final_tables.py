@@ -8,7 +8,7 @@ from src.final_tables import build, select_row, to_markdown
 
 def make_results():
     def row(model, params, **m):
-        base = {"dataset": "d", "split": "test", "model": model, "params": json.dumps(params), "n_users": 10}
+        base = {"dataset": "d", "split": "test", "model": model, "params": json.dumps(params), "n_users": 10, "seed": 42}
         for k in (10,):
             for name in ("precision", "recall", "hit", "ndcg"):
                 base[f"{name}@{k}"] = m.get(f"{name}@{k}", float("nan"))

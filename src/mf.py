@@ -26,6 +26,7 @@ import scipy.sparse as sp
 from numba import njit
 
 from src import data
+from src.config import SEED
 from src.eval import evaluate_rating, evaluate_topk, log_result
 
 
@@ -60,7 +61,7 @@ class MF:
 
     # ------------------------------------------------------------------ training
     def fit(self, train: pd.DataFrame, n_users: int, n_items: int, val: pd.DataFrame | None = None,
-            max_epochs: int = 40, patience: int = 2, seed: int = 42, verbose: bool = True,
+            max_epochs: int = 40, patience: int = 2, seed: int = SEED, verbose: bool = True,
             fixed_epochs: int | None = None):
         rng = np.random.default_rng(seed)
         u = train["u"].to_numpy(np.int32)

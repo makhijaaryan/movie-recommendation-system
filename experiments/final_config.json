@@ -74,7 +74,9 @@
       "k": 128,
       "lr": 0.005,
       "lam": 0.02,
-      "epochs": 57
+      "epochs": 57,
+      "biased": false,
+      "decay": 0.97
      }
     },
     "ranking": {
@@ -83,7 +85,9 @@
       "k": 128,
       "lr": 0.005,
       "lam": 0.01,
-      "epochs": 21
+      "epochs": 21,
+      "biased": false,
+      "decay": 0.97
      }
     }
    },
@@ -94,7 +98,9 @@
       "k": 256,
       "lr": 0.01,
       "lam": 0.03,
-      "epochs": 46
+      "epochs": 46,
+      "biased": true,
+      "decay": 0.97
      }
     },
     "ranking": {
@@ -103,7 +109,9 @@
       "k": 128,
       "lr": 0.01,
       "lam": 0.01,
-      "epochs": 9
+      "epochs": 9,
+      "biased": true,
+      "decay": 0.97
      }
     }
    },
@@ -200,7 +208,9 @@
       "k": 128,
       "lr": 0.005,
       "lam": 0.03,
-      "epochs": 60
+      "epochs": 60,
+      "biased": false,
+      "decay": 0.97
      }
     },
     "ranking": {
@@ -209,7 +219,9 @@
       "k": 128,
       "lr": 0.005,
       "lam": 0.01,
-      "epochs": 17
+      "epochs": 17,
+      "biased": false,
+      "decay": 0.97
      }
     }
    },
@@ -220,7 +232,9 @@
       "k": 256,
       "lr": 0.005,
       "lam": 0.03,
-      "epochs": 40
+      "epochs": 40,
+      "biased": true,
+      "decay": 0.99
      }
     },
     "ranking": {
@@ -229,7 +243,9 @@
       "k": 128,
       "lr": 0.005,
       "lam": 0.01,
-      "epochs": 17
+      "epochs": 17,
+      "biased": true,
+      "decay": 0.97
      }
     }
    },
@@ -258,5 +274,120 @@
     }
    }
   }
- }
+ },
+ "comparisons": [
+  {
+   "dataset": "ml_25m",
+   "a": "User-based CF",
+   "b": "Item-based CF",
+   "metrics": [
+    "ndcg@10",
+    "hit@10",
+    "rmse"
+   ]
+  },
+  {
+   "dataset": "ml_25m",
+   "a": "One-class dual-regularized",
+   "b": "One-class WRMF",
+   "metrics": [
+    "ndcg@10"
+   ]
+  },
+  {
+   "dataset": "ml_25m",
+   "a": "One-class WRMF",
+   "b": "User-based CF",
+   "metrics": [
+    "ndcg@10"
+   ]
+  },
+  {
+   "dataset": "ml_25m",
+   "a": "User-based CF",
+   "b": "Popularity (most rated)",
+   "metrics": [
+    "ndcg@10"
+   ]
+  },
+  {
+   "dataset": "ml_25m",
+   "a": "MF (biased)",
+   "b": "MF (plain)",
+   "metrics": [
+    "rmse"
+   ]
+  },
+  {
+   "dataset": "ml_25m",
+   "a": "MF (biased)",
+   "b": "Item-based CF",
+   "metrics": [
+    "rmse"
+   ]
+  },
+  {
+   "dataset": "ml_25m",
+   "a": "MF (biased)",
+   "b": "Popularity (most rated)",
+   "metrics": [
+    "ndcg@10"
+   ]
+  },
+  {
+   "dataset": "netflix",
+   "a": "Item-based CF",
+   "b": "User-based CF",
+   "metrics": [
+    "ndcg@10",
+    "hit@10",
+    "rmse"
+   ]
+  },
+  {
+   "dataset": "netflix",
+   "a": "One-class WRMF",
+   "b": "One-class dual-regularized",
+   "metrics": [
+    "ndcg@10"
+   ]
+  },
+  {
+   "dataset": "netflix",
+   "a": "One-class WRMF",
+   "b": "Item-based CF",
+   "metrics": [
+    "ndcg@10"
+   ]
+  },
+  {
+   "dataset": "netflix",
+   "a": "MF (plain)",
+   "b": "MF (biased)",
+   "metrics": [
+    "rmse"
+   ]
+  },
+  {
+   "dataset": "netflix",
+   "a": "MF (plain)",
+   "b": "Item-based CF",
+   "metrics": [
+    "rmse"
+   ]
+  },
+  {
+   "dataset": "netflix",
+   "a": "Item-based CF",
+   "b": "Popularity (most rated)",
+   "metrics": [
+    "ndcg@10"
+   ]
+  }
+ ],
+ "seeds": [
+  42,
+  43,
+  44
+ ]
 }

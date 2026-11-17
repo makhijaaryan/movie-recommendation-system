@@ -27,8 +27,7 @@ import scipy.sparse as sp
 
 ROOT = Path(__file__).resolve().parents[1]
 RAW = ROOT / "data" / "raw"
-PROC = ROOT / "data" / "processed"
-SEED = 42
+from src.config import PROC, SEED, processed_dir  # noqa: E402
 
 # Per-dataset pipeline parameters (see DIFFERENCE.md D8, D9, D10).
 CONFIG = {
@@ -145,7 +144,7 @@ def to_csr(df: pd.DataFrame, n_users: int, n_items: int) -> sp.csr_matrix:
 def build(name: str, seed: int = SEED) -> dict:
     cfg = CONFIG[name]
     lo, hi = (0.5, 5.0) if name.startswith("ml") else (1.0, 5.0)
-    out_dir = PROC / name
+    out_dir = processed_dir(name)
     out_dir.mkdir(parents=True, exist_ok=True)
 
     raw = load_raw(name)
@@ -190,15 +189,15 @@ def build(name: str, seed: int = SEED) -> dict:
 
 # ----------------------------------------------------------------------- loaders
 def load_split(name: str, which: str) -> pd.DataFrame:
-    return pd.read_parquet(PROC / name / f"{which}.parquet")
+    return pd.read_parquet(processed_dir(name) / f"{which}.parquet")
 
 
 def load_train_csr(name: str) -> sp.csr_matrix:
-    return sp.load_npz(PROC / name / "train_csr.npz")
+    return sp.load_npz(processed_dir(name) / "train_csr.npz")
 
 
 def load_id_maps(name: str) -> tuple[np.ndarray, np.ndarray]:
-    return np.load(PROC / name / "user_ids.npy"), np.load(PROC / name / "item_ids.npy")
+    return np.load(processed_dir(name) / "user_ids.npy"), np.load(processed_dir(name) / "item_ids.npy")
 
 
 if __name__ == "__main__":

@@ -21,6 +21,8 @@ import numpy as np
 import pandas as pd
 import scipy.sparse as sp
 
+from src.config import SEED
+
 ROOT = Path(__file__).resolve().parents[1]
 RESULTS_CSV = ROOT / "experiments" / "results.csv"
 
@@ -82,7 +84,7 @@ def topk_metrics_from_lists(topk: np.ndarray, rel: np.ndarray, ks=KS) -> dict[st
 
 def evaluate_topk(score_fn, eval_df: pd.DataFrame, exclude: sp.csr_matrix, n_items: int,
                   ks=KS, threshold: float = RELEVANT_THRESHOLD, batch_size: int = 2000,
-                  max_users: int | None = None, seed: int = 42,
+                  max_users: int | None = None, seed: int = SEED,
                   return_per_user: bool = False):
     """Top-K evaluation.
 
@@ -132,7 +134,7 @@ def add_history_bucket(per_user: pd.DataFrame, train_csr: sp.csr_matrix) -> pd.D
 
 # -------------------------------------------------------------------------- logging
 def log_result(dataset: str, model: str, split: str, params: dict, metrics: dict,
-               seed: int = 42, notes: str = "", path: Path = RESULTS_CSV) -> None:
+               seed: int = SEED, notes: str = "", path: Path = RESULTS_CSV) -> None:
     """Append one experiment row to experiments/results.csv."""
     path.parent.mkdir(parents=True, exist_ok=True)
     row = {"time": time.strftime("%Y-%m-%d %H:%M:%S"), "dataset": dataset, "model": model,

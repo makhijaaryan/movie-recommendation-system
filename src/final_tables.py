@@ -35,9 +35,10 @@ def _same(a, b) -> bool:
     return a == b
 
 
-def select_row(results: pd.DataFrame, dataset: str, spec: dict) -> pd.Series:
-    """The single TEST row of `dataset` whose model and params match `spec`; error if 0 or >1."""
-    t = results[(results["split"] == "test") & (results["dataset"] == dataset) & (results["model"] == spec["model"])]
+def select_row(results: pd.DataFrame, dataset: str, spec: dict, seed: int = 42) -> pd.Series:
+    """The single TEST row of `dataset` (run with `seed`) whose model and params match `spec`; error if 0 or >1."""
+    t = results[(results["split"] == "test") & (results["dataset"] == dataset) & (results["model"] == spec["model"])
+                & (results["seed"] == seed)]
     want = spec.get("params", {})
     hits = []
     for _, row in t.iterrows():
@@ -49,17 +50,17 @@ def select_row(results: pd.DataFrame, dataset: str, spec: dict) -> pd.Series:
     return hits[0]
 
 
-def build(results: pd.DataFrame, config: dict) -> pd.DataFrame:
+def build(results: pd.DataFrame, config: dict, seed: int = 42) -> pd.DataFrame:
     ks = config["ks"]
     rows = []
     for dataset, methods in config["datasets"].items():
         for label, spec in methods.items():
             out = {"dataset": dataset, "method": label}
             if "rating" in spec:
-                r = select_row(results, dataset, spec["rating"])
+                r = select_row(results, dataset, spec["rating"], seed)
                 out.update(rmse=r["rmse"], mae=r["mae"], rating_config=r["params"])
             if "ranking" in spec:
-                r = select_row(results, dataset, spec["ranking"])
+                r = select_row(results, dataset, spec["ranking"], seed)
                 for k in ks:
                     for m in RANK_METRICS:
                         out[f"{m}@{k}"] = r[f"{m}@{k}"]

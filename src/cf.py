@@ -26,6 +26,7 @@ import pandas as pd
 import scipy.sparse as sp
 
 from src import data
+from src.config import SEED
 from src.eval import evaluate_rating, evaluate_topk, log_result
 
 MAX_NEIGHBORS = 300          # neighbours stored per item (item-based)
@@ -207,7 +208,7 @@ def eval_model(model, dataset, split_df, exclude, n_items, rng, users=None, max_
     return {**r, **m, "sec_rating": round(t1 - t0, 1), "sec_topk": round(time.time() - t1, 1)}
 
 
-def sample_users(n_users: int, n: int | None, seed: int = 42):
+def sample_users(n_users: int, n: int | None, seed: int = SEED):
     if n is None or n >= n_users:
         return None
     return np.sort(np.random.default_rng(seed).choice(n_users, n, replace=False))
@@ -235,7 +236,7 @@ if __name__ == "__main__":
 
     t0 = time.time()
     if a.model == "item":
-        cache = str(data.PROC / a.dataset / f"itemknn_sim_shrink{int(a.shrink)}.npz")
+        cache = str(data.processed_dir(a.dataset) / f"itemknn_sim_shrink{int(a.shrink)}.npz")
         model = ItemKNN(k=a.ks[0], shrink=a.shrink).fit(tr, cache=cache)
         print(f"item similarity ready in {time.time()-t0:.0f}s", flush=True)
     else:
