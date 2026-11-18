@@ -152,6 +152,8 @@ class ItemKNN:
 
 # ------------------------------------------------------------------------------ user-based
 class UserKNN:
+    exclude_self = True      # False when the scored user is not part of the neighbour pool (web demo)
+
     def __init__(self, k: int = 50, shrink: float = SHRINK, batch: int = 256):
         self.k, self.shrink, self.batch = k, shrink, batch
 
@@ -185,7 +187,8 @@ class UserKNN:
         g = (self.t_rc[users] @ self.rc_t).toarray()
         n_co = (self.t_bin[users] @ self.b_t).toarray()
         sim = (g / self.t_norm[users][:, None] / self.norm[None, :]) * (n_co / (n_co + self.shrink))
-        sim[np.arange(len(users)), users] = -np.inf                       # drop self
+        if self.exclude_self:
+            sim[np.arange(len(users)), users] = -np.inf                   # drop self
         ti, tv = _topk_rows(sim, self.k)
         keep = tv > 0
         rows = np.repeat(np.arange(len(users)), self.k)

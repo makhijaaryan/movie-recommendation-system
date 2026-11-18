@@ -91,6 +91,10 @@ src/
   examples.py              qualitative success and failure examples
   curves.py                learning curves of the final MF and one-class models
   report_figures.py        report figures and figures/INDEX.md
+  export_models.py         exports the models served by the web app
+  serving.py               live recommendations for a new user (all five models)
+  api.py                   FastAPI backend for the web app
+frontend/                  React (Vite) dashboard, see frontend/README.md
 tests/                     pytest unit tests
 notebooks/01_eda.ipynb     exploratory analysis
 experiments/results.csv    one row per logged run (tuning, final, cold start, extra seeds)
@@ -227,7 +231,15 @@ python -m src.report_figures                           # fig_*.png and reports/f
 ```
 The written answers to the five research questions are in `reports/findings.md`.
 
-**13. Final table**
+**13. Web app (React dashboard + live recommendations)**
+```bash
+python -m src.export_models                  # once: exports the MF and one-class models served live (about 3 min)
+uvicorn src.api:app --port 8000              # backend: result tables + live recommendations (src/api.py, src/serving.py)
+cd frontend && npm install && npm run dev    # frontend at http://localhost:5173 (see frontend/README.md)
+```
+The app has an overview dashboard, a live recommendation page (rate movies, compare five models) and an analyses explorer, with a light theme and a dark-theme toggle.
+
+**14. Final table**
 ```bash
 python -m src.final_tables                            # reports/tables/main_results.md, refreshes the table above
 ```

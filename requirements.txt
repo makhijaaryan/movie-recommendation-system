@@ -13,3 +13,6 @@ pyarrow
 tabulate
 numba
 kaggle
+fastapi
+uvicorn
+httpx
