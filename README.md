@@ -80,10 +80,23 @@ src/
   mf.py                    matrix factorization (SGD, Numba)
   occf.py                  one-class CF (WRMF / dual-regularized, ALS, Numba)
   eda.py                   exploratory analysis figures and tables
-tests/                     pytest unit tests for every module
+  config.py                run-wide settings (seed from RECSYS_SEED, data folders)
+  final_run.py             re-run frozen final configurations per seed; per-user results
+  final_tables.py          main results table from the logged final runs
+  uncertainty.py           bootstrap confidence intervals, paired comparisons, seed summary
+  buckets.py               metrics by user-history size
+  foldin.py                closed-form fold-in of a new user (MF, one-class CF)
+  coldstart.py             simulated cold start (N = 1 ... 50 revealed ratings)
+  diagnostics.py           coverage / popularity / diversity of the top-10 lists
+  examples.py              qualitative success and failure examples
+  curves.py                learning curves of the final MF and one-class models
+  report_figures.py        report figures and figures/INDEX.md
+tests/                     pytest unit tests
 notebooks/01_eda.ipynb     exploratory analysis
-experiments/results.csv    one row per logged run (tuning and final)
-reports/                   EDA figures and tables
+experiments/results.csv    one row per logged run (tuning, final, cold start, extra seeds)
+experiments/final_config.json   which logged run feeds each table cell, comparisons, seeds
+reports/findings.md        written answers to the five research questions
+reports/tables, figures    all tables and figures (see reports/figures/INDEX.md)
 ```
 
 ## Setup
@@ -206,7 +219,15 @@ python -m src.diagnostics --report                     # reports/tables/list_dia
 python -m src.examples                                 # reports/examples.md; interpretation in reports/examples_analysis.md
 ```
 
-**12. Final table**
+**12. Report figures, learning curves and findings**
+```bash
+python -m src.curves --dataset netflix                 # MF / one-class learning curves (about 3 min each dataset)
+python -m src.curves --dataset ml_25m
+python -m src.report_figures                           # fig_*.png and reports/figures/INDEX.md (index of all figures and tables)
+```
+The written answers to the five research questions are in `reports/findings.md`.
+
+**13. Final table**
 ```bash
 python -m src.final_tables                            # reports/tables/main_results.md, refreshes the table above
 ```
