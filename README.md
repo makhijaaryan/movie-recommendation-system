@@ -57,6 +57,18 @@ _RMSE and MAE come from each method's configuration with the best *validation* R
 
 Uncertainty (all in `reports/tables/`): `bootstrap_ci.md` gives 95% bootstrap confidence intervals over users, `paired_comparisons.md` tests the headline comparisons with paired bootstrap differences, and `seed_summary.md` reports mean ± standard deviation over three seeds (each a new split, Netflix user sample and model initialisation, with hyperparameters frozen from seed 42). Rankings of the methods were identical across all three seeds; standard deviations are around 0.001 or smaller for most metrics.
 
+## Web app: try the recommenders
+
+The project ships with a web app (React front end, FastAPI back end) that serves all five recommenders for a new user in milliseconds and presents the evidence behind the comparison. Setup is in step 13 below; the full 24-image walkthrough with a usage workflow is in [`reports/webapp/INDEX.md`](reports/webapp/INDEX.md).
+
+| | |
+|:--|:--|
+| ![Dashboard](reports/webapp/01_dashboard_hero.jpg) **Dashboard.** Landing page with sample taste profiles and popular movies. | ![Overview](reports/webapp/06_overview_accuracy_vs_ranking.jpg) **Overview.** Results with 95% confidence intervals; the best RMSE is not the best recommender. |
+| ![Ratings and consensus picks](reports/webapp/13_recommend_five_ratings_consensus.jpg) **Get recommendations.** Rate movies in half-star steps; *consensus picks* are movies several models agree on. | ![Per-model lists](reports/webapp/15_recommend_user_cf_and_mf.jpg) **Five models side by side.** Per-model top-10 lists with latency and a "similar to ..., which you liked" hint. |
+| ![Cold start](reports/webapp/21_explore_cold_start.jpg) **Explore analyses.** History size, simulated cold start, list quality and training curves. | ![Fallback](reports/webapp/12_recommend_one_rating_fallback.jpg) **Cold-start behaviour.** With one rating the personalised models say so and fall back to popularity. |
+
+**How to use it.** (1) Open *Get Recommendations*; (2) search for movies you know, or load a sample profile; (3) rate them (half-star steps); (4) read the consensus picks and compare the five lists; (5) refine with the genre filter, list length or the single-model view. Use *Overview* and *Explore analyses* to see why the models differ.
+
 ## Datasets
 
 | Dataset                 | Use                                                                                    | Source                                                                   |
@@ -94,7 +106,8 @@ src/
   export_models.py         exports the models served by the web app
   serving.py               live recommendations for a new user (all five models)
   api.py                   FastAPI backend for the web app
-frontend/                  React (Vite) dashboard, see frontend/README.md
+frontend/                  React (Vite) web app, see frontend/README.md
+reports/webapp/            web app screenshots (light theme) and usage workflow (INDEX.md)
 tests/                     pytest unit tests
 notebooks/01_eda.ipynb     exploratory analysis
 experiments/results.csv    one row per logged run (tuning, final, cold start, extra seeds)
@@ -111,7 +124,7 @@ Developed and tested on Python 3.15 (other recent 3.x versions are untested) wit
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt        # exact versions used: requirements.lock.txt
-python -m pytest tests -q              # 30 tests, a few seconds
+python -m pytest tests -q              # 50 tests, a few seconds
 ```
 
 ## Getting the data
@@ -237,11 +250,17 @@ python -m src.export_models                  # once: exports the MF and one-clas
 uvicorn src.api:app --port 8000              # backend: result tables + live recommendations (src/api.py, src/serving.py)
 cd frontend && npm install && npm run dev    # frontend at http://localhost:5173 (see frontend/README.md)
 ```
-The app has an overview dashboard, a live recommendation page (rate movies, compare five models) and an analyses explorer, with a light theme and a dark-theme toggle.
+The app has a landing dashboard, an overview of the results, a live recommendation page (rate movies, compare five models) and an analyses explorer, with a light theme and a dark-theme toggle. Screenshots and a usage workflow: `reports/webapp/INDEX.md`.
 
 **14. Final table**
 ```bash
 python -m src.final_tables                            # reports/tables/main_results.md, refreshes the table above
+```
+
+**15. Final report and slides** (local deliverables, git-ignored: `reports/final_report/`, `reports/slides/`)
+```bash
+python reports/final_report/build_report.py           # Word + PDF report (needs python-docx; PDF via LibreOffice `soffice`)
+python reports/slides/build_slides.py                 # PowerPoint + PDF slides (needs python-pptx)
 ```
 
 Every tuning and final run appends a row to `experiments/results.csv` (dataset, model, split, parameters, metrics, seed). Hyperparameters are chosen on the **validation** split only; the test split is evaluated once per final model.

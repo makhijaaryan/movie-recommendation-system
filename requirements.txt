@@ -16,3 +16,5 @@ kaggle
 fastapi
 uvicorn
 httpx
+python-docx
+python-pptx
