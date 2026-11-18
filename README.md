@@ -201,7 +201,12 @@ python -m src.diagnostics --dataset ml_25m             # about 10 min
 python -m src.diagnostics --report                     # reports/tables/list_diagnostics.md, reports/figures/list_diagnostics.png
 ```
 
-**11. Final table**
+**11. Qualitative examples** (success and failure cases with titles, chosen by fixed rules)
+```bash
+python -m src.examples                                 # reports/examples.md; interpretation in reports/examples_analysis.md
+```
+
+**12. Final table**
 ```bash
 python -m src.final_tables                            # reports/tables/main_results.md, refreshes the table above
 ```
